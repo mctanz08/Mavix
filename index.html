@@ -1,0 +1,80 @@
+<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>MAVIX V11 — Video Downloader</title><style>
+:root{--bg:#0c0c10;--card:#17171e;--bd:#2a2a36;--tx:#ececf4;--mu:#8c8ca0;--p:#a855f7;--b:#4f7cff}
+*{box-sizing:border-box;margin:0}body{background:radial-gradient(900px 500px at 50% -10%,#2a1450 0,transparent 60%),var(--bg);color:var(--tx);font:15px/1.5 system-ui,sans-serif;min-height:100vh;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+.w{max-width:760px;margin:0 auto;padding:18px 16px 60px}
+header{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.logo{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--p),var(--b));display:grid;place-items:center;font-weight:800;box-shadow:0 0 22px #a855f766}
+h1{font-size:22px;letter-spacing:1px}h1 small{color:var(--mu);font-size:12px;margin-left:4px}
+.badge{margin-left:auto;padding:4px 12px;border-radius:99px;font-size:11px;font-weight:700;letter-spacing:2px;color:#fff;background:linear-gradient(90deg,#a855f7,#4f7cff,#e879f9,#a855f7);background-size:300% 100%;animation:flow 4s linear infinite,pulse 2.4s ease-in-out infinite;position:relative;overflow:hidden}
+.badge:after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,#fff6 50%,transparent 70%);transform:translateX(-100%);animation:shim 3s infinite}
+@keyframes flow{to{background-position:300% 0}}@keyframes pulse{50%{box-shadow:0 0 18px #a855f7aa}}@keyframes shim{to{transform:translateX(100%)}}
+nav{display:flex;gap:6px;margin:18px 0}nav button{flex:1}
+button,select,input{font:inherit;color:var(--tx)}
+button{min-height:46px;padding:0 16px;border:1px solid var(--bd);background:var(--card);border-radius:12px;cursor:pointer;transition:.18s}
+button:hover{border-color:var(--p);box-shadow:0 0 14px #a855f744}button:active{transform:scale(.97)}button:disabled{opacity:.5;cursor:default}
+button.pri,nav button.on{background:linear-gradient(135deg,var(--p),var(--b));border:0;font-weight:600}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:16px;margin-top:14px;animation:in .4s ease both;box-shadow:0 10px 30px #0006}
+@keyframes in{from{opacity:0;transform:translateY(10px)}}
+.row{display:flex;gap:8px;flex-wrap:wrap}.row>*{flex:1 1 auto}
+input,select{min-height:46px;width:100%;background:#101016;border:1px solid var(--bd);border-radius:12px;padding:0 14px}
+input:focus,select:focus{outline:0;border-color:var(--p);box-shadow:0 0 0 3px #a855f733}
+.mu{color:var(--mu);font-size:13px}.hide{display:none!important}
+.res{display:flex;gap:14px;flex-wrap:wrap}.res img{width:200px;max-width:100%;border-radius:12px;aspect-ratio:16/9;object-fit:cover;background:#101016}
+.res>div{flex:1 1 220px;min-width:0}.t{font-weight:700;overflow-wrap:anywhere}
+.bar{height:8px;background:#101016;border-radius:9px;overflow:hidden;margin-top:10px}.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--p),var(--b));transition:width .3s}
+.sk{height:90px;border-radius:14px;background:linear-gradient(90deg,#17171e,#22222c,#17171e);background-size:200% 100%;animation:sk 1.2s infinite;margin-top:14px}@keyframes sk{to{background-position:-200% 0}}
+.h{display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--bd)}.h img{width:64px;height:40px;border-radius:8px;object-fit:cover;background:#101016}.h>div{flex:1;min-width:0}.h .t{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.h button{min-height:38px;padding:0 10px}
+#toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom));transform:translate(-50%,30px);background:#22222c;border:1px solid var(--p);padding:12px 18px;border-radius:12px;opacity:0;transition:.3s;max-width:92vw;z-index:9}#toast.s{opacity:1;transform:translate(-50%,0)}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style></head><body><div class="w">
+<header><div class="logo">M</div><h1>MAVIX<small>V11 · by McTanz08</small></h1><span class="badge">PREMIUM</span></header>
+<nav><button class="on" data-v="lobby">Lobby</button><button data-v="hist">Riwayat</button><button data-v="set">Settings</button></nav>
+
+<section id="lobby"><div class="card"><p class="mu" style="margin-bottom:10px">Tempel tautan video dari platform apa pun — dideteksi otomatis. Unduh hanya konten milikmu atau yang diizinkan pemiliknya.</p>
+<input id="url" placeholder="https://..." inputmode="url" autocomplete="off">
+<div class="row" style="margin-top:8px"><button id="paste">Paste</button><button id="clear">Clear</button><button id="go" class="pri">Process</button></div>
+<p class="mu" style="margin-top:10px">Platform dikenali: YouTube, TikTok, Instagram, Facebook, X, Vimeo, dan situs lain yang didukung yt-dlp. Konten privat/DRM tidak bisa diunduh.</p></div>
+<div id="sk" class="sk hide"></div>
+<div id="out" class="card hide"><div class="res"><img id="th" alt=""><div><div class="t" id="ti"></div><div class="mu" id="me"></div><p class="mu" id="cp" style="margin-top:8px;max-height:84px;overflow:auto;white-space:pre-wrap"></p></div></div>
+<div class="row" style="margin-top:12px"><div><label class="mu">Kualitas (yang tersedia)</label><select id="q"></select></div><div><label class="mu">Bitrate MP3</label><select id="br"><option>128</option><option selected>192</option><option>256</option><option>320</option></select></div></div>
+<div class="row" style="margin-top:12px"><button id="dl" class="pri">DOWNLOAD (NO WM)</button><button id="mp3">MP3</button><button id="cc">SALIN CAPTION</button></div>
+<div id="jb" class="hide"><div class="bar"><i id="jbar"></i></div><p class="mu" id="jt" style="margin-top:6px"></p></div></div></section>
+
+<section id="hist" class="hide"><div class="card"><div class="row"><button id="clh">Clear history</button></div><div id="hl"></div></div></section>
+
+<section id="set" class="hide"><div class="card"><b>Video Tools</b><p class="mu" style="margin:6px 0 12px">Hasil disimpan sebagai file baru. File dihapus otomatis setelah beberapa menit.</p>
+<label class="mu">Sumber (unduhan MP4)</label><select id="src"></select>
+<div class="row" style="margin-top:8px"><div><label class="mu">Alat</label><select id="tool"><option value="stabilize">Video Stabilizer</option><option value="fps">FPS Enhancer (interpolasi)</option><option value="upscale">Upscale (terpisah dari kualitas asli)</option></select></div><div><label class="mu">Opsi</label><select id="opt"></select></div></div>
+<button id="rt" class="pri" style="margin-top:12px;width:100%">Jalankan</button>
+<div id="tb" class="hide"><div class="bar"><i id="tbar"></i></div><p class="mu" id="tt" style="margin-top:6px"></p></div></div></section>
+</div><div id="toast"></div>
+<script>
+const $=i=>document.getElementById(i),api=async(u,o)=>{const r=await fetch(u,o&&{method:o.m,headers:{'content-type':'application/json'},body:o.b&&JSON.stringify(o.b)});const j=await r.json();if(!r.ok)throw Error(j.error||'Gagal');return j};
+const T=m=>{const t=$('toast');t.textContent=m;t.className='s';clearTimeout(T.x);T.x=setTimeout(()=>t.className='',3200)};
+const fmt=s=>{s=+s||0;return Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0')};
+const NAME={360:'360p',480:'480p',720:'720p HD',1080:'1080p Full HD',1440:'1440p 2K',2160:'2160p 4K'};
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('on',x==b));['lobby','hist','set'].forEach(v=>$(v).classList.toggle('hide',v!=b.dataset.v));if(b.dataset.v=='hist')loadH();if(b.dataset.v=='set')loadSrc()});
+let info=null;
+$('paste').onclick=async()=>{try{$('url').value=await navigator.clipboard.readText()}catch{T('Izin clipboard ditolak, tempel manual')}};
+$('clear').onclick=()=>{$('url').value='';$('out').classList.add('hide')};
+$('go').onclick=async()=>{const u=$('url').value.trim();if(!u)return T('Masukkan URL dulu');$('out').classList.add('hide');$('sk').classList.remove('hide');$('go').disabled=true;
+ try{info=await api('/api/info',{m:'POST',b:{url:u}});$('th').src=info.thumbnail;$('ti').textContent=info.title;$('me').textContent=`${info.platform} · ${info.creator} · ${fmt(info.duration)} · sumber maks ${info.maxHeight?info.maxHeight+'p':'?'}`;$('cp').textContent=info.captionClean;
+ const hs=info.heights.filter(h=>NAME[h]);$('q').innerHTML=(hs.length?hs:[info.maxHeight||720]).map(h=>`<option value="${h}">${NAME[h]||h+'p'}</option>`).join('');$('out').classList.remove('hide')}
+ catch(e){T(e.message)}$('sk').classList.add('hide');$('go').disabled=false};
+$('cc').onclick=async()=>{try{await navigator.clipboard.writeText(info.captionClean);T('Caption disalin (tanpa hashtag)')}catch{T('Gagal menyalin')}};
+async function watch(id,bar,txt,box,done){box.classList.remove('hide');for(;;){let j;try{j=await api('/api/jobs/'+id)}catch(e){T(e.message);return}
+ bar.style.width=j.progress+'%';txt.textContent=j.status=='queued'?'Mengantre…':j.status=='running'?`Memproses ${j.progress}%`:j.status=='done'?'Selesai':'Gagal: '+j.error;
+ if(j.status=='done'){T('Berhasil');done&&done(id,j);return}if(j.status=='error'){T('Gagal: '+j.error);return}await new Promise(r=>setTimeout(r,1000))}}
+async function start(type){try{const r=await api('/api/download',{m:'POST',b:{url:info.url,type,height:$('q').value,bitrate:$('br').value,title:info.title,thumb:info.thumbnail}});
+ watch(r.id,$('jbar'),$('jt'),$('jb'),id=>{location.href='/api/file/'+id})}catch(e){T(e.message)}}
+$('dl').onclick=()=>start('mp4');$('mp3').onclick=()=>start('mp3');
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+async function loadH(){const l=await api('/api/history');$('hl').innerHTML=l.length?l.map(r=>`<div class="h"><img src="${esc(r.thumb)}" alt=""><div><div class="t">${esc(r.title)}</div><div class="mu">${r.format} · ${esc(r.resolution)} · ${new Date(r.created).toLocaleString('id-ID')} · ${r.status}</div></div>${r.hasFile?`<button onclick="location.href='/api/file/${r.id}'">Buka</button>`:''}<button onclick="del('${r.id}')">Hapus</button></div>`).join(''):'<p class="mu" style="padding:12px 0">Belum ada riwayat.</p>'}
+window.del=async id=>{await api('/api/history/'+id,{m:'DELETE'});loadH()};
+$('clh').onclick=async()=>{await api('/api/history',{m:'DELETE'});loadH();T('Riwayat dihapus')};
+async function loadSrc(){const l=(await api('/api/history')).filter(r=>r.format=='MP4'&&r.hasFile&&r.status=='selesai');$('src').innerHTML=l.length?l.map(r=>`<option value="${r.id}">${esc(r.title)} (${esc(r.resolution)})</option>`).join(''):'<option value="">Belum ada unduhan MP4</option>'}
+const OPTS={stabilize:[[3,'Ringan'],[10,'Sedang'],[20,'Kuat']],fps:[[30,'30 FPS'],[60,'60 FPS'],[120,'120 FPS']],upscale:[[1440,'2K (1440p)'],[2160,'4K (2160p)']]};
+const so=()=>$('opt').innerHTML=OPTS[$('tool').value].map(([v,n])=>`<option value="${v}">${n}</option>`).join('');$('tool').onchange=so;so();
+$('rt').onclick=async()=>{if(!$('src').value)return T('Pilih sumber dulu');try{const r=await api('/api/tool',{m:'POST',b:{historyId:$('src').value,tool:$('tool').value,option:$('opt').value}});watch(r.id,$('tbar'),$('tt'),$('tb'),id=>{location.href='/api/file/'+id})}catch(e){T(e.message)}};
+</script></body></html>
