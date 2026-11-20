@@ -82,7 +82,7 @@ app.use(express.json({ limit: '10kb' }));
 app.use('/api', rateLimit({ windowMs: 60000, limit: 60, standardHeaders: true }));
 app.use('/api/download', rateLimit({ windowMs: 600000, limit: 20 }));
 app.use('/api/tool', rateLimit({ windowMs: 600000, limit: 10 }));
-app.use(express.static('public'));
+app.get('/',(_,r)=>r.sendFile(path.resolve('index.html')));
 
 app.get('/api/health', async (_, res) => {
   const chk = c => run(c, ['-version'].slice(c === 'yt-dlp' ? 1 : 0).concat(c === 'yt-dlp' ? ['--version'] : [])).then(() => true, () => false);
